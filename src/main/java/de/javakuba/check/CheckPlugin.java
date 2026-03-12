@@ -22,7 +22,7 @@ public class CheckPlugin extends JavaPlugin {
         reportManager  = new ReportManager(this);
         sessionManager = new SessionManager(this);
 
-        // Commands
+
         ReportCommand reportCmd = new ReportCommand(this);
         getCommand("report").setExecutor(reportCmd);
         getCommand("report").setTabCompleter(reportCmd);
@@ -40,7 +40,7 @@ public class CheckPlugin extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new CheckListener(this), this);
 
-        // Start report expiry task
+
         reportManager.startExpiryTask();
 
         getLogger().info("CheckPlugin enabled!");

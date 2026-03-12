@@ -41,10 +41,9 @@ public class CheckCommand implements CommandExecutor, TabCompleter {
 
         switch (label.toLowerCase()) {
 
-            // ─── /check ──────────────────────────────────────────────────
             case "check" -> {
                 if (args.length == 0) {
-                    // Open report GUI
+
                     if (plugin.getReportManager().getTotalReports() == 0) {
                         player.sendMessage(C.prefix() + C.green("No reports pending. ✔"));
                         return true;
@@ -52,7 +51,7 @@ public class CheckCommand implements CommandExecutor, TabCompleter {
                     ReportGUI.open(player, plugin, 0);
                     return true;
                 }
-                // /check <player>
+
                 String targetName = args[0].startsWith("@") ? args[0].substring(1) : args[0];
                 Player target = Bukkit.getPlayerExact(targetName);
                 if (target == null) {
@@ -70,7 +69,7 @@ public class CheckCommand implements CommandExecutor, TabCompleter {
                 plugin.getSessionManager().startSession(player, target);
             }
 
-            // ─── /check-back (alias for finished with no action) ─────────
+
             case "check-back" -> {
                 if (!plugin.getSessionManager().isChecking(player)) {
                     player.sendMessage(C.prefix() + C.red("You are not in a check session."));
@@ -79,7 +78,7 @@ public class CheckCommand implements CommandExecutor, TabCompleter {
                 plugin.getSessionManager().finishSession(player);
             }
 
-            // ─── /check-finished ─────────────────────────────────────────
+
             case "check-finished" -> {
                 if (!plugin.getSessionManager().isChecking(player)) {
                     player.sendMessage(C.prefix() + C.red("You are not in a check session."));
@@ -87,14 +86,14 @@ public class CheckCommand implements CommandExecutor, TabCompleter {
                 }
                 CheckSession session = plugin.getSessionManager().endAndGetSession(player);
                 if (session != null) {
-                    // Remove the report from the queue
+
                     plugin.getReportManager().removeReport(session.targetUUID());
                     player.sendMessage(C.prefix() + C.gray("Check finished. Report for ")
                             + C.aqua(session.targetName()) + C.gray(" cleared."));
                 }
             }
 
-            // ─── /check-punish <duration> <reason> ───────────────────────
+
             case "check-punish" -> {
                 if (!plugin.getSessionManager().isChecking(player)) {
                     player.sendMessage(C.prefix() + C.red("You are not in a check session."));
@@ -112,10 +111,10 @@ public class CheckCommand implements CommandExecutor, TabCompleter {
                 CheckSession session = plugin.getSessionManager().endAndGetSession(player);
                 if (session == null) return true;
 
-                // Remove report
+
                 plugin.getReportManager().removeReport(session.targetUUID());
 
-                // Parse duration and ban
+
                 if (durationStr.equalsIgnoreCase("perm")) {
                     banPlayer(session.targetUUID(), session.targetName(), reason, null, player.getName());
                     player.sendMessage(C.prefix() + C.red("Permanently banned ")
@@ -124,7 +123,7 @@ public class CheckCommand implements CommandExecutor, TabCompleter {
                     Duration dur = parseDuration(durationStr);
                     if (dur == null) {
                         player.sendMessage(C.prefix() + C.red("Invalid duration. Use: 1h, 12h, 1d, 7d, 30d, perm"));
-                        // Re-open session? No — just inform
+
                         return true;
                     }
                     Date expires = Date.from(Instant.now().plus(dur));
@@ -134,14 +133,14 @@ public class CheckCommand implements CommandExecutor, TabCompleter {
                             + C.red(" for " + durationStr + " — ") + C.white(reason));
                 }
 
-                // Kick the player if online
+
                 Player target = Bukkit.getPlayer(session.targetUUID());
                 if (target != null) {
                     target.kickPlayer(C.color("&cYou have been banned.\n&7Reason: &f" + reason
                             + "\n&7Duration: &f" + durationStr));
                 }
 
-                // Announce to staff
+
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (plugin.getConfigManager().isAllowed(p.getName())) {
                         p.sendMessage(C.prefix() + C.aqua(player.getName())
@@ -155,7 +154,7 @@ public class CheckCommand implements CommandExecutor, TabCompleter {
     }
 
     private void banPlayer(java.util.UUID uuid, String name, String reason, Date expires, String bannedBy) {
-        // Use vanilla ban list (by name — works on most servers)
+
         BanList banList = Bukkit.getBanList(BanList.Type.NAME);
         banList.addBan(name, reason, expires, bannedBy);
     }

@@ -10,7 +10,7 @@ public class ReportEntry {
     private final UUID   reportedUUID;
     private final String reportedName;
 
-    // Multiple reporters
+
     private final List<ReporterInfo> reporters = new ArrayList<>();
 
     public ReportEntry(UUID reportedUUID, String reportedName) {
@@ -27,7 +27,7 @@ public class ReportEntry {
     public List<ReporterInfo> getReporters() { return reporters; }
     public int getReportCount()     { return reporters.size(); }
 
-    // Returns the most recent reason
+
     public String getLatestReason() {
         if (reporters.isEmpty()) return "Unknown";
         return reporters.get(reporters.size() - 1).reason();

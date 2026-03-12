@@ -12,10 +12,10 @@ public class ReportManager {
 
     private final CheckPlugin plugin;
 
-    // Reported UUID -> ReportEntry (one entry per reported player, can have multiple reporters)
+
     private final LinkedHashMap<UUID, ReportEntry> reports = new LinkedHashMap<>();
 
-    // Cooldown: reporter UUID -> last report time
+
     private final Map<UUID, Instant> reportCooldown = new HashMap<>();
     private static final int COOLDOWN_SECONDS = 60;
 
@@ -24,7 +24,7 @@ public class ReportManager {
     }
 
     public String addReport(Player reporter, Player reported, String reason) {
-        // Cooldown check
+
         Instant last = reportCooldown.get(reporter.getUniqueId());
         if (last != null) {
             long secondsSince = ChronoUnit.SECONDS.between(last, Instant.now());
@@ -33,7 +33,7 @@ public class ReportManager {
             }
         }
 
-        // Can't report yourself
+
         if (reporter.getUniqueId().equals(reported.getUniqueId())) {
             return "self";
         }
@@ -46,7 +46,7 @@ public class ReportManager {
         );
         entry.addReport(reporter.getName(), reason);
 
-        // Notify online staff
+
         notifyStaff(reporter.getName(), reported.getName(), reason, entry.getReportCount());
 
         return "ok";
@@ -96,7 +96,7 @@ public class ReportManager {
         int expiryMins = plugin.getConfigManager().getReportExpiryMinutes();
         if (expiryMins <= 0) return;
 
-        // Check every minute
+
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             Instant cutoff = Instant.now().minus(expiryMins, ChronoUnit.MINUTES);
             reports.entrySet().removeIf(e -> e.getValue().getFirstReportTime().isBefore(cutoff));

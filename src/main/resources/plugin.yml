@@ -1,0 +1,37 @@
+name: CheckPlugin
+version: 1.0.0
+main: de.javakuba.check.CheckPlugin
+api-version: 1.20
+author: javakuba
+description: Staff check system with report GUI
+
+commands:
+  report:
+    description: Report a player
+    usage: /report <player> <reason>
+  check:
+    description: Check a player (spec TP) or open report GUI
+    usage: /check [player]
+  check-back:
+    description: Return from check (no action)
+    usage: /check-back
+  check-finished:
+    description: End check session, return without punishment
+    usage: /check-finished
+  check-punish:
+    description: Ban the checked player and return
+    usage: /check-punish <duration> <reason>
+  check-admin:
+    description: Manage check admin access
+    usage: /check-admin <add|remove|list|reload> [player]
+
+permissions:
+  check.report:
+    description: Allows /report
+    default: true
+  check.use:
+    description: Allows /check, /check-back, /check-finished, /check-punish
+    default: false
+  check.admin:
+    description: Allows /check-admin
+    default: op

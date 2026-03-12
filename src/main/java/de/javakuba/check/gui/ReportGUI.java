@@ -22,8 +22,7 @@ public class ReportGUI {
     private static final DateTimeFormatter TIME_FMT =
             DateTimeFormatter.ofPattern("HH:mm dd/MM/yy").withZone(ZoneId.systemDefault());
 
-    // Map from inventory title hash → ordered list of reported UUIDs shown in that page
-    // We re-open fresh each time, so we keep a per-player cache of the last opened GUI slots
+
     private static final Map<UUID, List<UUID>> openGUISlots = new HashMap<>();
 
     private ReportGUI() {}
@@ -31,10 +30,10 @@ public class ReportGUI {
     public static void open(Player staff, CheckPlugin plugin, int page) {
         Collection<ReportEntry> all = plugin.getReportManager().getAllReports();
         List<ReportEntry> entries = new ArrayList<>(all);
-        // Newest first (LinkedHashMap insertion order = oldest first → reverse)
+
         Collections.reverse(entries);
 
-        int pageSize = 45; // 5 rows for reports, last row for navigation
+        int pageSize = 45; 
         int totalPages = Math.max(1, (int) Math.ceil(entries.size() / (double) pageSize));
         page = Math.max(0, Math.min(page, totalPages - 1));
 
@@ -51,7 +50,7 @@ public class ReportGUI {
         }
         openGUISlots.put(staff.getUniqueId(), slotMap);
 
-        // Navigation row (row 6)
+
         fillBorder(inv, pageSize, totalPages, page);
 
         staff.openInventory(inv);
@@ -62,12 +61,12 @@ public class ReportGUI {
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
         if (meta == null) return skull;
 
-        // Set skull owner (async if possible)
+
         meta.setOwningPlayer(Bukkit.getOfflinePlayer(entry.getReportedUUID()));
 
         boolean online = Bukkit.getPlayer(entry.getReportedUUID()) != null;
 
-        // Display name
+
         meta.setDisplayName((online ? ChatColor.GREEN : ChatColor.RED) + "" + ChatColor.BOLD
                 + entry.getReportedName()
                 + ChatColor.RESET + ChatColor.GRAY + " (" + (online ? "Online" : "Offline") + ")");
@@ -77,7 +76,7 @@ public class ReportGUI {
         lore.add(ChatColor.YELLOW + "Reports: " + ChatColor.WHITE + entry.getReportCount());
         lore.add("");
 
-        // Show up to 3 most recent reports
+
         List<ReportEntry.ReporterInfo> reporters = entry.getReporters();
         int shown = Math.min(3, reporters.size());
         for (int i = reporters.size() - 1; i >= reporters.size() - shown; i--) {
@@ -100,25 +99,24 @@ public class ReportGUI {
     }
 
     private static void fillBorder(Inventory inv, int pageSize, int totalPages, int currentPage) {
-        // Gray glass pane filler
+
         ItemStack filler = buildNamedItem(Material.GRAY_STAINED_GLASS_PANE, ChatColor.DARK_GRAY + "─");
         for (int i = pageSize; i < 54; i++) inv.setItem(i, filler);
 
-        // Prev page
         if (currentPage > 0) {
             inv.setItem(48, buildNamedItem(Material.ARROW,
                     ChatColor.YELLOW + "◀ Previous page",
                     ChatColor.GRAY + "Page " + currentPage + "/" + totalPages));
         }
-        // Next page
+
         if (currentPage < totalPages - 1) {
             inv.setItem(50, buildNamedItem(Material.ARROW,
                     ChatColor.YELLOW + "Next page ▶",
                     ChatColor.GRAY + "Page " + (currentPage + 2) + "/" + totalPages));
         }
-        // Close button
+
         inv.setItem(49, buildNamedItem(Material.BARRIER, ChatColor.RED + "Close"));
-        // Refresh button
+
         inv.setItem(53, buildNamedItem(Material.LIME_DYE, ChatColor.GREEN + "Refresh"));
     }
 
@@ -133,7 +131,7 @@ public class ReportGUI {
         return item;
     }
 
-    /** Returns the reported UUID at the clicked slot for a given player's open GUI, or null. */
+
     public static UUID getClickedUUID(UUID staffUUID, int slot) {
         List<UUID> slots = openGUISlots.get(staffUUID);
         if (slots == null || slot >= slots.size()) return null;

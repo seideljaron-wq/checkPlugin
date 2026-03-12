@@ -21,7 +21,7 @@ public class CheckListener implements Listener {
     private final CheckPlugin plugin;
     private static final String GUI_PREFIX = ChatColor.DARK_RED + "" + ChatColor.BOLD + "Reports";
 
-    // Track current page per staff UUID
+
     private final java.util.Map<UUID, Integer> currentPage = new java.util.HashMap<>();
 
     public CheckListener(CheckPlugin plugin) {
@@ -40,27 +40,27 @@ public class CheckListener implements Listener {
         int slot = e.getRawSlot();
         int page = currentPage.getOrDefault(staff.getUniqueId(), 0);
 
-        // Navigation buttons in bottom row (slots 45-53)
-        if (slot == 49) { staff.closeInventory(); return; } // Close
-        if (slot == 53) { // Refresh
+
+        if (slot == 49) { staff.closeInventory(); return; }
+        if (slot == 53) { 
             ReportGUI.open(staff, plugin, page);
             return;
         }
-        if (slot == 48) { // Prev page
+        if (slot == 48) { 
             page = Math.max(0, page - 1);
             currentPage.put(staff.getUniqueId(), page);
             ReportGUI.open(staff, plugin, page);
             return;
         }
-        if (slot == 50) { // Next page
+        if (slot == 50) { 
             page++;
             currentPage.put(staff.getUniqueId(), page);
             ReportGUI.open(staff, plugin, page);
             return;
         }
 
-        // Skull click — check that player
-        if (slot >= 45) return; // Bottom row, nothing else to do
+
+        if (slot >= 45) return; 
 
         UUID reportedUUID = ReportGUI.getClickedUUID(staff.getUniqueId(), slot);
         if (reportedUUID == null) return;
@@ -74,14 +74,14 @@ public class CheckListener implements Listener {
 
         staff.closeInventory();
 
-        // Try to find online player
+
         Player target = Bukkit.getPlayer(reportedUUID);
         if (target == null) {
-            // Offline — still start session so /check-finished works, but just set spec at their last loc
+  
             OfflinePlayer offline = Bukkit.getOfflinePlayer(reportedUUID);
             staff.sendMessage(C.prefix() + C.yellow(entry.getReportedName())
                     + C.gray(" is offline. Starting check session anyway."));
-            // Can't TP to offline player properly — inform staff
+      
             staff.sendMessage(C.prefix() + C.gray("Use ") + C.yellow("/check-finished")
                     + C.gray(" to close the session."));
             plugin.getSessionManager().startOfflineSession(staff, reportedUUID, entry.getReportedName());
@@ -102,9 +102,9 @@ public class CheckListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-        // If a checker disconnects, just clean up their session
+
         if (plugin.getSessionManager().isChecking(player)) {
-            plugin.getSessionManager().endAndGetSession(player); // restores GM/location if they reconnect — but they won't
+            plugin.getSessionManager().endAndGetSession(player); 
         }
         currentPage.remove(player.getUniqueId());
     }

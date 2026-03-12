@@ -3,8 +3,5 @@ owner: javakuba
 allowed-players:
   - javakuba
 
-# How long a report stays in the GUI before auto-expiring (minutes, 0 = never)
 report-expiry-minutes: 60
 
-# Ban duration shortcuts: use like /check-punish 7d Hacking
-# Supports: 1h, 12h, 1d, 7d, 30d, perm

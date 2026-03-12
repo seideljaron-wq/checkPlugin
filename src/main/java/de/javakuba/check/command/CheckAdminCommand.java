@@ -27,7 +27,6 @@ public class CheckAdminCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Only owner or players with check.admin permission
         boolean isOwner = player.getName().equalsIgnoreCase(plugin.getConfigManager().getOwner());
         if (!isOwner && !player.hasPermission("check.admin")) {
             player.sendMessage(C.prefix() + C.red("No permission."));
